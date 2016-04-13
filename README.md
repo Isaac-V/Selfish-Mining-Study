@@ -1,0 +1,1 @@
+#Selfish Mining is bad for Bitcoin
