@@ -1,7 +1,10 @@
-import urllib.parse
-import urllib.request
+import http.client
 import json
 
-url = 'https://api.biteasy.com/v2/btc/testnet/blocks?type=ORPHANED&per_page=20'
-response = json.load(urllib.request.urlopen(url))
-print(response)
+url = 'api.biteasy.com'
+connection = http.client.HTTPSConnection(url, 443)
+connection.request('GET', '/v2/btc/mainnet/blocks?type=ORPHANED&per_page=20')
+response = connection.getresponse()
+source = response.read().decode('utf-8')
+data = json.loads(source)
+print(data)
