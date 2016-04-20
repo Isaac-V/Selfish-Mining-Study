@@ -1,0 +1,7 @@
+References:
+
+https://www.f2pool.com/bitcoin-blocks
+
+https://www.antpool.com/poolStats.htm
+
+Eyal, I., & Sirer, E. G. (2014). Majority is not enough: Bitcoin mining is vulnerable. In Financial Cryptography and Data Security (pp. 436-454). Springer Berlin Heidelberg.
