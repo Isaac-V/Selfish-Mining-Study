@@ -49,10 +49,21 @@ def main():
     temp = temp.items()
 
     for word in temp:
-      print(word)
-
+        print(word)
+      
+    dateMap = OrderedDict.fromkeys(dates)
+    for i in dates:
+        dateMap[i] = []
+        
+    for i in data:
+        dateMap[i[1]].append(i[0])
+    
+    for i in dates:
+        print(i,len(datemap[i]))
+    
       
     print(temp)
+
     # for line in Antpool:
     #     if len(prev_line) > 0:
     #         print 'PREV LINE', prev_line
