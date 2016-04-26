@@ -25,9 +25,16 @@ def seqs(list):
         index += 1
         
     return seqArray
-
-def theoryProbs(mainBlks, poolBlks):
+    
+def hashPow(mainBlks, poolBlks):
     hPow = []
+    
+    for i in range(len(mainBlks)):
+        hPow.append(len(poolBlks[i])/len(mainBlks[i]))
+    
+    return hPow
+
+def theoryProbs(mainBlks, poolBlks, hPow):
     tProbs = []
     
     for i in range(len(mainBlks)):
