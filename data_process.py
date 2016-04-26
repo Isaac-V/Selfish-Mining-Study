@@ -6,6 +6,7 @@ def main():
     prev_line = []
     seq = []
     Antpool = []
+    AntpoolTotal = []
     F2pool = []
     data = []
     dates = []
@@ -34,8 +35,10 @@ def main():
         i.pop(2)
         if len(i) == 3:
             i.pop(2)
-        i[0] = int(i[0], 10)
         i[1] = (i[1].split(' ')[0])
+        antDate = i[1][1:]+'/'+i[1][:4]
+        AntpoolTotal.append(andDate.replace('-','/'))
+
 
     data.pop(0)
     for i in data:
@@ -44,31 +47,17 @@ def main():
         i[1] = (i[1].split(' ')[0])
         dates.append(i[1])
     
-    temp = Counter(dates)
-    print('SUM', sum(temp.values()))
-    temp = temp.items()
 
-    for word in temp:
-        print(word)
+    antMap = OrderedDict.fromkeys(AntpoolTotal)
+
+    for i in AntpoolTotal:
+        antMap[i] = []
+
+    for i in Antpool:
+        antMap[i[1]].append(i[0])
       
     dateMap = OrderedDict.fromkeys(dates)
-    for i in dates:
-        dateMap[i] = []
-        
-    for i in data:
-        dateMap[i[1]].append(i[0])
-    
-    for i in dates:
-        print(i,len(datemap[i]))
-    
-      
-    print(temp)
-
-    # for line in Antpool:
-    #     if len(prev_line) > 0:
-    #         print 'PREV LINE', prev_line
-    #     prev_line = line
-
+    print dateMap
 
         
 main()
