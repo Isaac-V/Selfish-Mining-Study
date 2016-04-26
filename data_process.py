@@ -1,5 +1,15 @@
 import csv
 from collections import OrderedDict, Counter
+import itertools
+import pprint
+
+
+def split_seq(iterable, size):
+    it = iter(iterable)
+    item = list(itertools.islice(it, size))
+    while item:
+        yield item
+        item = list(itertools.islice(it, size))
 
 
 def main():
@@ -55,10 +65,21 @@ def main():
         i[0] = int(i[0], 10)
     data.reverse()
 
-    print 'F2pool', F2pool[0]   
-    print 'Data', data[0]
-    print 'Antpool', Antpool[0]
+    F2Blks = []
+    AntBlks = []
+    F2pool = list(itertools.chain.from_iterable(F2pool))
+    data = list(itertools.chain.from_iterable(data))
+    Antpool = list(itertools.chain.from_iterable(Antpool)) 
+
+    data = list(split_seq(data, 50))
+
+    for i in data:
+        F2Blks.append(sorted(list(set.intersection(set(i), set(F2pool)))))
+
+    for i in data:
+        AntBlks.append(sorted(list(set.intersection(set(i), set(Antpool)))))
 
 
+    print 'Ant', AntBlks[0:4]
         
 main()
