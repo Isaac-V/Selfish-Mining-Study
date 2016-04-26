@@ -10,18 +10,18 @@ def main():
     data = []
     dates = []
     totals = []
-    with open('blockchain.csv', 'rb') as f:
+    with open('blockchain.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             data.append(row)
 
 
-    with open('AntPoolBlockData.csv', 'rb') as f:
+    with open('AntPoolBlockData.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             Antpool.append(row)
 
-    with open('F2PoolBlockData.csv', 'rb') as f:
+    with open('F2PoolBlockData.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             F2pool.append(row)
@@ -45,12 +45,14 @@ def main():
         dates.append(i[1])
     
     temp = Counter(dates)
-    print 'SUM', sum(temp.values())
+    print('SUM', sum(temp.values()))
     temp = temp.items()
 
     for word in temp:
-      print word
+      print(word)
 
+      
+    print(temp)
     # for line in Antpool:
     #     if len(prev_line) > 0:
     #         print 'PREV LINE', prev_line
