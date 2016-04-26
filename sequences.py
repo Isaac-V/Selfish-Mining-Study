@@ -55,7 +55,7 @@ def obsProbs(mainBlks, poolBlks):
         seqVals = seqs(poolBlks[i])
         oProbs.append([])
         for j in range(len(seqVals)):
-            oProbs[i].append(seqVals[j]/(len(mainBlks[0]) - 2))
+            oProbs[i].append(seqVals[j]/(len(mainBlks[i]) - 2))
     
     return oProbs
         
