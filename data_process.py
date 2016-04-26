@@ -1,5 +1,5 @@
 import csv
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 
 
 def main():
@@ -42,9 +42,16 @@ def main():
 		i[1] = (i[1].split(' ')[0])
 		dates.append(i[1])
 	
-	temp = list(OrderedDict.fromkeys(dates))
+	temp = Counter(dates)
+	print 'SUM', sum(temp.values())
+	temp = temp.items()
 
-	print Antpool
+	for word in temp:
+		print word
+
+
+
+	
 
 		
 main()
