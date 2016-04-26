@@ -129,7 +129,7 @@ def main():
     data = list(itertools.chain.from_iterable(data))
     Antpool = list(itertools.chain.from_iterable(Antpool)) 
 
-    data = list(split_seq(data, 500))
+    data = list(split_seq(data, 2000))
 
     for i in data:
         F2Blks.append(sorted(list(set.intersection(set(i), set(F2pool)))))
@@ -142,11 +142,15 @@ def main():
     tProbs = theoryProbs(data, AntBlks, hPower)
     
     oProbs = obsProbs(data, AntBlks)
+        
+    f = open('results.csv', 'w')
     
-    for i in range(len(oProbs)):
-        print('#####################################')
-        pprint.pprint(tProbs[i])
-        pprint.pprint(oProbs[i])
+    for i in range(11):
+        currRow = ''
+        for j in range(len(tProbs)):
+            currRow += str(tProbs[j][i]) + ',' + str(oProbs[j][i]) + ','
+        f.write(currRow + '\n')
+    
         
      
 main()
