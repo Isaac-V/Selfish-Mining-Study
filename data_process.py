@@ -45,16 +45,16 @@ def main():
         dates.append(i[1])
     
     temp = Counter(dates)
-    # print 'SUM', sum(temp.values())
+    print 'SUM', sum(temp.values())
     temp = temp.items()
 
-    # for word in temp:
-    #   print word
+    for word in temp:
+      print word
 
-    for line in Antpool:
-        if len(prev_line) > 0:
-            print 'PREV LINE', prev_line
-        prev_line = line
+    # for line in Antpool:
+    #     if len(prev_line) > 0:
+    #         print 'PREV LINE', prev_line
+    #     prev_line = line
 
 
         
