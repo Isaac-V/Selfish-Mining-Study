@@ -1,7 +1,9 @@
+from __future__ import division
 import csv
 from collections import OrderedDict, Counter
 import itertools
 import pprint
+
 
 def seqs(list):
     seqArray = [];
@@ -137,13 +139,13 @@ def main():
     for i in data:
         AntBlks.append(sorted(list(set.intersection(set(i), set(Antpool)))))
     
-    hPower = hashPow(data, AntBlks)
+    hPower = hashPow(data, F2Blks)
     
-    tProbs = theoryProbs(data, AntBlks, hPower)
+    tProbs = theoryProbs(data, F2Blks, hPower)
     
-    oProbs = obsProbs(data, AntBlks)
+    oProbs = obsProbs(data, F2Blks)
         
-    f = open('results.csv', 'w')
+    f = open('resultsF2.csv', 'w')
     
     for i in range(11):
         currRow = ''
