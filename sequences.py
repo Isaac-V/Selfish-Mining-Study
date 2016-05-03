@@ -55,9 +55,13 @@ def expectedSeqs(poolTotal, mainTotal):
         total = 0
         for trial in trials:
             total += (trial[seqSize] - seqAvg[seqSize])**2
-            
+        stdDev.append((total/len(trials))**(1/2))
+    
+    stats = []
+    stats.append(seqAvg)
+    stats.append(stdDev)
         
-    return rAvgs
+    return stats
 
 def seqs(list):
     seqArray = [];
