@@ -5,12 +5,15 @@ import itertools
 import pprint
 import random
 
+seqMax = 11
 
-def seqStats(poolTotal, mainTotal):
+def seqSims(poolTotal, mainTotal):
     
     random.seed(0)
-    trialCount = 0
-    trials = []
+    rows = []
+    
+    #trialCount = 0
+    #trials = []
 
     blocks = []
     for index in range(poolTotal):
@@ -27,7 +30,7 @@ def seqStats(poolTotal, mainTotal):
             blocks[swapIndex] = holder
             
         seqArray = []
-        for i in range(11):
+        for i in range(seqMax):
             seqArray.append(0)
         
         index = 0
@@ -47,38 +50,43 @@ def seqStats(poolTotal, mainTotal):
                 seqArray[seqSize] += 1
                 
             index += 1
+            
+        for index in range(1, len(seqArray)):
+            rows.append(str(trial) + ',' + str(index) + ',' + str(seqArray[index]))
         
-        trialCount += 1
-        trials.append(seqArray)
+        #trialCount += 1
+        #trials.append(seqArray)
     
-    seqAvg = []
-    for seqSize in range(11):
-        total = 0
-        for trial in trials:
-            total += trial[seqSize]
-        seqAvg.append(total / len(trials))
+    # seqAvg = []
+    # for seqSize in range(seqMax):
+        # total = 0
+        # for trial in trials:
+            # total += trial[seqSize]
+        # seqAvg.append(total / len(trials))
     
-    stdDev = []
-    for seqSize in range(11):
-        total = 0
-        for trial in trials:
-            total += (trial[seqSize] - seqAvg[seqSize])**2
-        stdDev.append((total/len(trials))**(1/2))
+    # stdDev = []
+    # for seqSize in range(seqMax):
+        # total = 0
+        # for trial in trials:
+            # total += (trial[seqSize] - seqAvg[seqSize])**2
+        # stdDev.append((total/len(trials))**(1/2))
     
-    stats = []
-    stats.append(seqAvg)
-    stats.append(stdDev)
+    # stats = []
+    # stats.append(seqAvg)
+    # stats.append(stdDev)
         
-    return stats
+    return rows
     
     
 def seqs(list):
+
+    rows = []
+    
     seqArray = []
-    for i in range(11):
+    for i in range(seqMax):
         seqArray.append(0)
     
     index = 0
-    
     while index < len(list):
 
         count = 1
@@ -97,8 +105,11 @@ def seqs(list):
                     
         seqArray[count] += 1
         index += 1
-        
-    return seqArray
+    
+    for index in range(1, len(seqArray)):
+        rows.append('-1' + ',' + str(index) + ',' + str(seqArray[index]))
+            
+    return rows
     
 def hashPow(mainBlks, poolBlks):
     hPow = []
@@ -113,7 +124,7 @@ def theoryProbs(mainBlks, poolBlks, hPow):
         
     for i in range(len(hPow)):
         tProbs.append([])
-        for j in range(11):
+        for j in range(seqMax):
             tProbs[i].append(hPow[i]**j)
         
     return tProbs
@@ -197,8 +208,10 @@ def main():
     F2pool = list(itertools.chain.from_iterable(F2pool))
     data = list(itertools.chain.from_iterable(data))
     Antpool = list(itertools.chain.from_iterable(Antpool)) 
-
-    data = list(split_seq(data, 2000))
+    
+    splitSize = 500
+    
+    data = list(split_seq(data, splitSize))
 
     for i in data:
         F2Blks.append(sorted(list(set.intersection(set(i), set(F2pool)))))
@@ -206,20 +219,46 @@ def main():
     for i in data:
         AntBlks.append(sorted(list(set.intersection(set(i), set(Antpool)))))
     
-    hPower = hashPow(data, F2Blks)
+#    hPower = hashPow(data, F2Blks)
+#    tProbs = theoryProbs(data, F2Blks, hPower)
+#    oProbs = obsProbs(data, F2Blks)    
+#    f = open('resultsF2.csv', 'w')  
+#    for i in range(11):
+#        currRow = ''
+#        for j in range(len(tProbs)):
+#            currRow += str(tProbs[j][i]) + ',' + str(oProbs[j][i]) + ','
+#        f.write(currRow + '\n')
+
+    header = '#pool,startHeight,endHeight,type,trial,seqLength,count'
     
-    tProbs = theoryProbs(data, F2Blks, hPower)
+    statRows = []
+    statRows.append(header)
     
-    oProbs = obsProbs(data, F2Blks)
+    for index in range(len(data)):
+        print('Blocks Processed ~ ' + str(splitSize*index))
+        startHeight = str(data[index][0])
+        endHeight = str(data[index][len(data[index])-1])
+        antPrefix = 'AntPool,' + startHeight + ',' + endHeight + ','
+        f2Prefix = 'F2Pool,' + startHeight + ',' + endHeight + ','
         
-    f = open('resultsF2.csv', 'w')
-    
-    for i in range(11):
-        currRow = ''
-        for j in range(len(tProbs)):
-            currRow += str(tProbs[j][i]) + ',' + str(oProbs[j][i]) + ','
-        f.write(currRow + '\n')
-    
+        antObs = seqs(AntBlks[index])
+        for row in antObs:
+            statRows.append(antPrefix + 'Observed,' + row)
         
-     
+        antSims = seqSims(len(AntBlks[index]),len(data[index]))
+        for row in antSims:
+            statRows.append(antPrefix + 'Simulated,' + row)
+            
+        f2Obs = seqs(F2Blks[index])
+        for row in f2Obs:
+            statRows.append(f2Prefix + 'Observed,' + row)
+        
+        f2Sims = seqSims(len(F2Blks[index]),len(data[index]))
+        for row in f2Sims:
+            statRows.append(f2Prefix + 'Simulated,' + row)
+            
+    f = open('results' + str(splitSize) + '.csv', 'w')  
+    for row in statRows:
+        f.write(row + '\n')
+    
 main()
