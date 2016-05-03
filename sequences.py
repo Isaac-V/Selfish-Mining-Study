@@ -1,3 +1,64 @@
+def expectedSeqs(poolTotal, mainTotal):
+    
+    random.seed(0)
+    trialCount = 0
+    trials = []
+
+    blocks = []
+    for index in range(poolTotal):
+        blocks.append(1)
+    for index in range(poolTotal, mainTotal):
+        blocks.append(0)
+      
+    for trial in range(1000):
+    
+        for index in range(len(blocks)-1, 0, -1):
+            swapIndex = random.randint(0, 1000000000) % index
+            holder = blocks[index]
+            blocks[index] = blocks[swapIndex]
+            blocks[swapIndex] = holder
+            
+        seqArray = []
+        for i in range(11):
+            seqArray.append(0)
+        
+        index = 0
+        while index < len(blocks):
+            seqSize = 0
+            if blocks[index] == 1:
+                seqSize += 1
+                index += 1
+                while index < len(blocks):
+                    if blocks[index] == 1:
+                        seqSize += 1
+                        index += 1
+                    else:
+                        break
+            
+            if(seqSize < len(seqArray)):
+                seqArray[seqSize] += 1
+                
+            index += 1
+        
+        trialCount += 1
+        trials.append(seqArray)
+    
+    seqAvg = []
+    for seqSize in range(11):
+        total = 0
+        for trial in trials:
+            total += trial[seqSize]
+        seqAvg.append(total / len(trials))
+    
+    stdDev = []
+    for seqSize in range(ll):
+        total = 0
+        for trial in trials:
+            total += (trial[seqSize] - seqAvg[seqSize])**2
+            
+        
+    return rAvgs
+
 def seqs(list):
     seqArray = [];
     for i in range(11):

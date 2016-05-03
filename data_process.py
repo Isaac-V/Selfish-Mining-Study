@@ -12,7 +12,7 @@ def expectedSeqs(poolTotal, mainTotal):
     trials = 0
     rAvgs = []
     for i in range(11):
-        seqArray.append(0)
+        rAvgs.append(0)
 
     blocks = []
     for index in range(poolTotal):
