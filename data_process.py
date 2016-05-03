@@ -3,14 +3,67 @@ import csv
 from collections import OrderedDict, Counter
 import itertools
 import pprint
+import random
 
 
+def expectedSeqs(poolTotal, mainTotal):
+    
+    random.seed(0)
+    trials = 0
+    rAvgs = []
+    for i in range(11):
+        seqArray.append(0)
+
+    blocks = []
+    for index in range(poolTotal):
+        blocks.append(1)
+    for index in range(poolTotal, mainTotal):
+        blocks.append(0)
+      
+    for trial in range(1000):
+    
+        for index in range(len(blocks)-1, 0, -1):
+            swapIndex = random.randint(0, 1000000000) % index
+            holder = blocks[index]
+            blocks[index] = blocks[swapIndex]
+            blocks[swapIndex] = holder
+            
+        seqArray = []
+        for i in range(11):
+            seqArray.append(0)
+        
+        index = 0
+        while index < len(blocks):
+            count = 0
+            if blocks[index] == 1:
+                count += 1
+                index += 1
+                while index < len(blocks):
+                    if blocks[index] == 1:
+                        count += 1
+                        index += 1
+                    else:
+                        break
+            
+            if(count < len(seqArray)):
+                seqArray[count] += 1
+                
+            index += 1
+        
+        for index in range(len(rAvgs)):
+            rAvgs[index] = ((rAvgs[index] * trials) + seqArray[index]) / (trials + 1)
+        
+        trials += 1
+        
+    return rAvgs
+    
+    
 def seqs(list):
-    seqArray = [];
+    seqArray = []
     for i in range(11):
         seqArray.append(0)
     
-    index = 0;
+    index = 0
     
     while index < len(list):
 
