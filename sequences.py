@@ -1,4 +1,7 @@
-def expectedSeqs(poolTotal, mainTotal):
+import random
+import pprint
+
+def seqStats(poolTotal, mainTotal):
     
     random.seed(0)
     trialCount = 0
@@ -35,7 +38,7 @@ def expectedSeqs(poolTotal, mainTotal):
                     else:
                         break
             
-            if(seqSize < len(seqArray)):
+            if(seqSize < len(seqArray) and seqSize != 0):
                 seqArray[seqSize] += 1
                 
             index += 1
@@ -51,7 +54,7 @@ def expectedSeqs(poolTotal, mainTotal):
         seqAvg.append(total / len(trials))
     
     stdDev = []
-    for seqSize in range(ll):
+    for seqSize in range(11):
         total = 0
         for trial in trials:
             total += (trial[seqSize] - seqAvg[seqSize])**2
@@ -99,8 +102,9 @@ def hashPow(mainBlks, poolBlks):
     
     return hPow
 
-def theoryProbs(mainBlks, poolBlks, hPow):
+def theoryProbs(mainBlks, poolBlks):
     tProbs = []
+    hPow = []
     
     for i in range(len(mainBlks)):
         hPow.append(len(poolBlks[i])/len(mainBlks[i]))
@@ -134,6 +138,19 @@ def main():
     tProbs = theoryProbs(mainBlks, poolBlks)
     
     for i in range(len(oProbs)):
-        print(oProbs[i], tProbs[i])
+        pprint.pprint(oProbs[i])
+        pprint.pprint(tProbs[i])
+    
+    obsSeqs = []
+    seqStats = []
+    
+    for i in range(2):
+        obsSeqs.append(seqs(poolBlks[i]))
+        seqStats.append(seqStats(len(poolBlks[i]), len(mainBlks[i])))
+        
+    for i in range(len(obsSeqs)):
+        pprint.pprint(obsSeqs[i])
+        pprint.pprint(seqStats[i][0])
+        pprint.pprint(seqStats[i][1])
     
 main()

@@ -6,13 +6,11 @@ import pprint
 import random
 
 
-def expectedSeqs(poolTotal, mainTotal):
+def seqStats(poolTotal, mainTotal):
     
     random.seed(0)
-    trials = 0
-    rAvgs = []
-    for i in range(11):
-        rAvgs.append(0)
+    trialCount = 0
+    trials = []
 
     blocks = []
     for index in range(poolTotal):
@@ -34,28 +32,44 @@ def expectedSeqs(poolTotal, mainTotal):
         
         index = 0
         while index < len(blocks):
-            count = 0
+            seqSize = 0
             if blocks[index] == 1:
-                count += 1
+                seqSize += 1
                 index += 1
                 while index < len(blocks):
                     if blocks[index] == 1:
-                        count += 1
+                        seqSize += 1
                         index += 1
                     else:
                         break
             
-            if(count < len(seqArray)):
-                seqArray[count] += 1
+            if(seqSize < len(seqArray) and seqSize != 0):
+                seqArray[seqSize] += 1
                 
             index += 1
         
-        for index in range(len(rAvgs)):
-            rAvgs[index] = ((rAvgs[index] * trials) + seqArray[index]) / (trials + 1)
+        trialCount += 1
+        trials.append(seqArray)
+    
+    seqAvg = []
+    for seqSize in range(11):
+        total = 0
+        for trial in trials:
+            total += trial[seqSize]
+        seqAvg.append(total / len(trials))
+    
+    stdDev = []
+    for seqSize in range(11):
+        total = 0
+        for trial in trials:
+            total += (trial[seqSize] - seqAvg[seqSize])**2
+        stdDev.append((total/len(trials))**(1/2))
+    
+    stats = []
+    stats.append(seqAvg)
+    stats.append(stdDev)
         
-        trials += 1
-        
-    return rAvgs
+    return stats
     
     
 def seqs(list):
