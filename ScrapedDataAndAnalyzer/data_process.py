@@ -6,14 +6,17 @@ import pprint
 import random
 
 seqMax = 11
+f1 = open('BigDeviations.csv', 'w') 
 
-def seqSims(poolTotal, mainTotal):
+def seqSims(pool, poolBlks, mainBlks):
+    
+    poolTotal = len(poolBlks)
+    mainTotal = len(mainBlks)
     
     random.seed(0)
     rows = []
     
-    #trialCount = 0
-    #trials = []
+    trials = []
 
     blocks = []
     for index in range(poolTotal):
@@ -53,35 +56,42 @@ def seqSims(poolTotal, mainTotal):
             
         for index in range(1, len(seqArray)):
             rows.append(str(trial) + ',' + str(index) + ',' + str(seqArray[index]))
+
+        trials.append(seqArray)
+    
+    seqAvg = []
+    for seqSize in range(seqMax):
+        total = 0
+        for trial in trials:
+            total += trial[seqSize]
+        seqAvg.append(total / len(trials))
+    
+    stdDev = []
+    for seqSize in range(seqMax):
+        total = 0
+        for trial in trials:
+            total += (trial[seqSize] - seqAvg[seqSize])**2
+        stdDev.append((total/len(trials))**(1/2))
         
-        #trialCount += 1
-        #trials.append(seqArray)
-    
-    # seqAvg = []
-    # for seqSize in range(seqMax):
-        # total = 0
-        # for trial in trials:
-            # total += trial[seqSize]
-        # seqAvg.append(total / len(trials))
-    
-    # stdDev = []
-    # for seqSize in range(seqMax):
-        # total = 0
-        # for trial in trials:
-            # total += (trial[seqSize] - seqAvg[seqSize])**2
-        # stdDev.append((total/len(trials))**(1/2))
-    
-    # stats = []
-    # stats.append(seqAvg)
-    # stats.append(stdDev)
+    bigDevs = []
+    obsSeqs = seqs(poolBlks)
+    for index in range(1, len(obsSeqs)): 
+        if stdDev[index] > 0:
+            deviations = abs(obsSeqs[index] - seqAvg[index]) / stdDev[index]
+            if deviations > 2:
+                devStr = pool + ',' + str(mainBlks[0]) + ',' + str(mainBlks[mainTotal - 1]) + ','
+                devStr += str(index) + ',' + str(obsSeqs[index]) + ',' + str(seqAvg[index]) + ','
+                devStr += str(stdDev[index]) + ',' + str(deviations)
+                bigDevs.append(devStr)
+
+    for line in bigDevs:
+        f1.write(line + '\n')
         
     return rows
     
     
 def seqs(list):
 
-    rows = []
-    
     seqArray = []
     for i in range(seqMax):
         seqArray.append(0)
@@ -105,11 +115,8 @@ def seqs(list):
                     
         seqArray[count] += 1
         index += 1
-    
-    for index in range(1, len(seqArray)):
-        rows.append('-1' + ',' + str(index) + ',' + str(seqArray[index]))
             
-    return rows
+    return seqArray
     
 def hashPow(mainBlks, poolBlks):
     hPow = []
@@ -209,7 +216,7 @@ def main():
     data = list(itertools.chain.from_iterable(data))
     Antpool = list(itertools.chain.from_iterable(Antpool)) 
     
-    splitSize = 500
+    splitSize = 100
     
     data = list(split_seq(data, splitSize))
 
@@ -234,6 +241,9 @@ def main():
     statRows = []
     statRows.append(header)
     
+     
+    f1.write('pool,startHeight,endHeight,seqLength,observed,expected,stdDev,deviations' + '\n')
+    
     for index in range(len(data)):
         print('Blocks Processed ~ ' + str(splitSize*index))
         startHeight = str(data[index][0])
@@ -242,23 +252,25 @@ def main():
         f2Prefix = 'F2Pool,' + startHeight + ',' + endHeight + ','
         
         antObs = seqs(AntBlks[index])
-        for row in antObs:
-            statRows.append(antPrefix + 'Observed,' + row)
+        for seqLen in range(1, len(antObs)):
+            obsRow = '-1' + ',' + str(index) + ',' + str(antObs[seqLen])
+            statRows.append(antPrefix + 'Observed,' + obsRow)
         
-        antSims = seqSims(len(AntBlks[index]),len(data[index]))
+        antSims = seqSims('AntPool', AntBlks[index], data[index])
         for row in antSims:
             statRows.append(antPrefix + 'Simulated,' + row)
-            
-        f2Obs = seqs(F2Blks[index])
-        for row in f2Obs:
-            statRows.append(f2Prefix + 'Observed,' + row)
         
-        f2Sims = seqSims(len(F2Blks[index]),len(data[index]))
+        f2Obs = seqs(F2Blks[index])
+        for seqLen in range(1, len(f2Obs)):
+            obsRow = '-1' + ',' + str(index) + ',' + str(f2Obs[seqLen])
+            statRows.append(f2Prefix + 'Observed,' + obsRow)
+        
+        f2Sims = seqSims('F2Pool', F2Blks[index], data[index])
         for row in f2Sims:
             statRows.append(f2Prefix + 'Simulated,' + row)
             
-    f = open('results' + str(splitSize) + '.csv', 'w')  
+    f2 = open('results' + str(splitSize) + '.csv', 'w')  
     for row in statRows:
-        f.write(row + '\n')
+        f2.write(row + '\n')
     
 main()
