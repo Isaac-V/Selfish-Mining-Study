@@ -229,7 +229,7 @@ def main():
 #            currRow += str(tProbs[j][i]) + ',' + str(oProbs[j][i]) + ','
 #        f.write(currRow + '\n')
 
-    header = '#pool,startHeight,endHeight,type,trial,seqLength,count'
+    header = 'pool,startHeight,endHeight,type,trial,seqLength,count'
     
     statRows = []
     statRows.append(header)
